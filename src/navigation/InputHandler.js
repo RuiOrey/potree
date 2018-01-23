@@ -421,7 +421,12 @@ Potree.InputHandler = class InputHandler extends THREE.EventDispatcher {
                 {
                     console.log( this.constructor.name + ": onMouseMove" );
                 }
-		
+
+            if ( !this.areInputListenersEnabled() )
+                {
+                    return;
+                }
+
             e.preventDefault();
 
             let rect = this.domElement.getBoundingClientRect();
@@ -562,6 +567,19 @@ Potree.InputHandler = class InputHandler extends THREE.EventDispatcher {
                             } );
                         }
                 }
+        }
+
+    areInputListenersEnabled()
+        {
+
+            let areEnabled = true;
+
+            this.inputListeners.forEach( ( inputListener ) =>
+            {
+                areEnabled = inputListener.enabled ? areEnabled : false;
+            } )
+            return areEnabled;
+
         }
 
     startDragging( object, args = null )
