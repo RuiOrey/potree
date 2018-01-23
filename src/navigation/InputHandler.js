@@ -498,30 +498,6 @@ Potree.InputHandler = class InputHandler extends THREE.EventDispatcher {
                         }
                 }
 
-            //let justHovered = currentlyHoveredObjects
-            //	.filter(e => previouslyHoveredObjects.indexOf(e) === -1);
-            //let justUnhovered = previouslyHoveredObjects
-            //	.filter(e => currentlyHoveredObjects.indexOf(e) === -1);
-            //	
-            //justHovered = justHovered.find(e => (e._listeners && e._listeners["mouseover"]));
-            //justUnhovered = justUnhovered.find(e => (e._listeners && e._listeners["mouseover"]));
-
-            //let over = justHovered.find(e => (e._listeners && e._listeners["mouseover"]));
-            //if(over){
-            //	over.dispatchEvent({
-            //		type: "mouseover",
-            //		object: over
-            //	});
-            //}
-            //
-            //let leave = justUnhovered.find(e => (e._listeners && e._listeners["mouseleave"]));
-            //if(leave){
-            //	leave.dispatchEvent({
-            //		type: "mouseleave",
-            //		object: leave
-            //	});
-            //}
-
             this.hoveredElements = hoveredElements;
         }
 
@@ -545,8 +521,6 @@ Potree.InputHandler = class InputHandler extends THREE.EventDispatcher {
                 }
 
             let ndelta = Math.sign( delta );
-
-            //this.wheelDelta += Math.sign(delta);
 
             if ( this.hoveredElement )
                 {

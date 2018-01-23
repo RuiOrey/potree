@@ -1325,15 +1325,15 @@ Potree.Viewer = class PotreeViewer extends THREE.EventDispatcher {
             { // create ORBIT CONTROLS
                 this.orbitControls = new Potree.OrbitControls( this );
                 this.orbitControls.enabled = false;
-                this.orbitControls.addEventListener( "start", this.disableAnnotations.bind( this ) );
-                this.orbitControls.addEventListener( "end", this.enableAnnotations.bind( this ) );
+                // this.orbitControls.addEventListener( "start", this.disableAnnotations.bind( this ) ); //ro
+                // this.orbitControls.addEventListener( "end", this.enableAnnotations.bind( this ) );
             }
 
             { // create EARTH CONTROLS
                 this.earthControls = new Potree.EarthControls( this );
                 this.earthControls.enabled = false;
-                this.earthControls.addEventListener( "start", this.disableAnnotations.bind( this ) );
-                this.earthControls.addEventListener( "end", this.enableAnnotations.bind( this ) );
+                // this.earthControls.addEventListener( "start", this.disableAnnotations.bind( this ) );//ro
+                // this.earthControls.addEventListener( "end", this.enableAnnotations.bind( this ) );
             }
         };
 
@@ -1464,110 +1464,111 @@ Potree.Viewer = class PotreeViewer extends THREE.EventDispatcher {
                     this.renderer.domElement.focus();
                 }.bind( this ) );
 
-            // this.skybox = Potree.utils.loadSkybox(new URL(Potree.resourcePath + "/textures/skybox2/").href);
+            // this.skybox = Potree.utils.loadSkybox(new URL(Potree.resourcePath + "/textures/skybox2/").href); // ro
 
             // enable frag_depth extension for the interpolation shader, if available
             this.renderer.context.getExtension( "EXT_frag_depth" );
         }
 
-    updateAnnotations()
-        {
+    /* ro
+     updateAnnotations()
+     {
 
-            if ( !this.getShowAnnotations() )
-                {
-                    this.scene.annotations.traverseDescendants( descendant =>
-                    {
-                        descendant.display = false;
+     if ( !this.getShowAnnotations() )
+     {
+     this.scene.annotations.traverseDescendants( descendant =>
+     {
+     descendant.display = false;
 
-                        return;
-                    } );
+     return;
+     } );
 
-                    return;
-                }
+     return;
+     }
 
-            this.scene.annotations.updateBounds();
-            this.scene.camera.updateMatrixWorld();
+     this.scene.annotations.updateBounds();
+     this.scene.camera.updateMatrixWorld();
 
-            let distances = [];
+     let distances = [];
 
-            let renderAreaWidth = this.renderArea.clientWidth;
-            let renderAreaHeight = this.renderArea.clientHeight;
-            this.scene.annotations.traverse( annotation =>
-            {
+     let renderAreaWidth = this.renderArea.clientWidth;
+     let renderAreaHeight = this.renderArea.clientHeight;
+     this.scene.annotations.traverse( annotation =>
+     {
 
-                if ( annotation === this.scene.annotations )
-                    {
-                        annotation.display = false;
-                        return true;
-                    }
+     if ( annotation === this.scene.annotations )
+     {
+     annotation.display = false;
+     return true;
+     }
 
-                if ( !annotation.visible )
-                    {
-                        return false;
-                    }
+     if ( !annotation.visible )
+     {
+     return false;
+     }
 
-                annotation.scene = this.scene;
+     annotation.scene = this.scene;
 
-                let element = annotation.domElement;
+     let element = annotation.domElement;
 
-                let position = annotation.position;
-                if ( !position )
-                    {
-                        position = annotation.boundingBox.getCenter();
-                    }
+     let position = annotation.position;
+     if ( !position )
+     {
+     position = annotation.boundingBox.getCenter();
+     }
 
-                let distance = viewer.scene.camera.position.distanceTo( position );
-                let radius = annotation.boundingBox.getBoundingSphere().radius;
+     let distance = viewer.scene.camera.position.distanceTo( position );
+     let radius = annotation.boundingBox.getBoundingSphere().radius;
 
-                let screenPos = new THREE.Vector3();
-                let screenSize = 0;
-                {
-                    // SCREEN POS
-                    screenPos.copy( position ).project( this.scene.camera );
-                    screenPos.x = renderAreaWidth * (screenPos.x + 1) / 2;
-                    screenPos.y = renderAreaHeight * (1 - (screenPos.y + 1) / 2);
+     let screenPos = new THREE.Vector3();
+     let screenSize = 0;
+     {
+     // SCREEN POS
+     screenPos.copy( position ).project( this.scene.camera );
+     screenPos.x = renderAreaWidth * (screenPos.x + 1) / 2;
+     screenPos.y = renderAreaHeight * (1 - (screenPos.y + 1) / 2);
 
-                    //screenPos.x = Math.floor(screenPos.x - element[0].clientWidth / 2);
-                    //screenPos.y = Math.floor(screenPos.y - annotation.elTitlebar[0].clientHeight / 2);
-                    screenPos.x = Math.floor( screenPos.x );
-                    screenPos.y = Math.floor( screenPos.y );
+     //screenPos.x = Math.floor(screenPos.x - element[0].clientWidth / 2);
+     //screenPos.y = Math.floor(screenPos.y - annotation.elTitlebar[0].clientHeight / 2);
+     screenPos.x = Math.floor( screenPos.x );
+     screenPos.y = Math.floor( screenPos.y );
 
-                    // SCREEN SIZE
-                    let fov = Math.PI * viewer.scene.camera.fov / 180;
-                    let slope = Math.tan( fov / 2.0 );
-                    let projFactor = 0.5 * renderAreaHeight / (slope * distance);
+     // SCREEN SIZE
+     let fov = Math.PI * viewer.scene.camera.fov / 180;
+     let slope = Math.tan( fov / 2.0 );
+     let projFactor = 0.5 * renderAreaHeight / (slope * distance);
 
-                    screenSize = radius * projFactor;
-                }
+     screenSize = radius * projFactor;
+     }
 
-                element[ 0 ].style.left = screenPos.x + "px";
-                element[ 0 ].style.top = screenPos.y + "px";
+     element[ 0 ].style.left = screenPos.x + "px";
+     element[ 0 ].style.top = screenPos.y + "px";
 
-                let zIndex = 10000000 - distance * (10000000 / this.scene.camera.far);
-                if ( annotation.descriptionVisible )
-                    {
-                        zIndex += 10000000;
-                    }
+     let zIndex = 10000000 - distance * (10000000 / this.scene.camera.far);
+     if ( annotation.descriptionVisible )
+     {
+     zIndex += 10000000;
+     }
 
-                if ( annotation.children.length > 0 )
-                    {
-                        let expand = screenSize > annotation.collapseThreshold || annotation.boundingBox.containsPoint( this.scene.camera.position );
-                        annotation.expand = expand;
+     if ( annotation.children.length > 0 )
+     {
+     let expand = screenSize > annotation.collapseThreshold || annotation.boundingBox.containsPoint( this.scene.camera.position );
+     annotation.expand = expand;
 
-                        if ( !expand )
-                            {
-                                annotation.display = (-1 <= screenPos.z && screenPos.z <= 1);
-                            }
+     if ( !expand )
+     {
+     annotation.display = (-1 <= screenPos.z && screenPos.z <= 1);
+     }
 
-                        return expand;
-                    }
-                else
-                    {
-                        annotation.display = (-1 <= screenPos.z && screenPos.z <= 1);
-                    }
-            } );
-        }
-
+     return expand;
+     }
+     else
+     {
+     annotation.display = (-1 <= screenPos.z && screenPos.z <= 1);
+     }
+     } );
+     }
+     */
     update( delta, timestamp )
         {
 
@@ -1734,7 +1735,7 @@ Potree.Viewer = class PotreeViewer extends THREE.EventDispatcher {
                     }
             }
 
-            this.updateAnnotations();
+            // this.updateAnnotations(); // ro
 
             if ( this.mapView )
                 {
