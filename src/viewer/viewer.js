@@ -1804,7 +1804,7 @@ Potree.Viewer = class PotreeViewer extends THREE.EventDispatcher {
 
             this.runCurrentRenderer();
 
-            this.stats.end();
+            //this.stats.end();
 
             Potree.framenumber++;
         };
